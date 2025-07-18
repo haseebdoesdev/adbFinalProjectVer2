@@ -1,0 +1,814 @@
+{
+  "_id": "507f1f77bcf86cd799439011",
+  "username": "student1",
+  "email": "student1@university.edu",
+  "password_hash": "$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/.BSqwbgKaEq32xw6e",
+  "first_name": "John",
+  "last_name": "Smith",
+  "role": "student",
+  "is_active": true,
+  "date_joined": "2024-01-15T08:30:00.000Z",
+  "last_login": "2024-12-20T14:22:00.000Z",
+  "student_id_str": "S2001",
+  "major": "Computer Science",
+  "account_created_by": {
+    "_id": "507f1f77bcf86cd799439001",
+    "username": "admin1",
+    "email": "admin1@university.edu",
+    "first_name": "Dr. Robert",
+    "last_name": "Wilson",
+    "role": "admin",
+    "is_active": true,
+    "date_joined": "2023-06-01T09:00:00.000Z",
+    "last_login": "2024-12-20T08:15:00.000Z",
+    "department": "Academic Affairs"
+  },
+  "enrolled_courses": [
+    {
+      "_id": "507f1f77bcf86cd799439022",
+      "course_code": "CS101",
+      "course_name": "Introduction to Programming",
+      "description": "A comprehensive course covering introduction to programming concepts and applications.",
+      "credits": 3,
+      "department": "Computer Science",
+      "max_capacity": 75,
+      "current_enrollment": 45,
+      "semester": "Spring 2025",
+      "year": 2025,
+      "schedule_info": "Monday, Wednesday, Friday 10:00-11:00, Room 201",
+      "created_at": "2024-09-01T10:00:00.000Z",
+      "updated_at": "2024-12-15T16:30:00.000Z",
+      "course_created_by": {
+        "_id": "507f1f77bcf86cd799439002",
+        "username": "admin2",
+        "email": "admin2@university.edu",
+        "first_name": "Dr. Emily",
+        "last_name": "Martinez",
+        "role": "admin",
+        "department": "Computer Science Department Head",
+        "created_at": "2024-08-15T14:30:00.000Z"
+      },
+      "teacher": {
+        "_id": "507f1f77bcf86cd799439033",
+        "username": "teacher1",
+        "email": "teacher1@university.edu",
+        "password_hash": "$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/.BSqwbgKaEq32xw6e",
+        "first_name": "Dr. Sarah",
+        "last_name": "Johnson",
+        "role": "teacher",
+        "is_active": true,
+        "date_joined": "2023-08-01T09:00:00.000Z",
+        "last_login": "2024-12-20T13:45:00.000Z",
+        "teacher_id_str": "T1001",
+        "department": "Computer Science",
+        "assigned_by": {
+          "_id": "507f1f77bcf86cd799439002",
+          "username": "admin2",
+          "first_name": "Dr. Emily",
+          "last_name": "Martinez",
+          "assignment_date": "2024-08-20T10:00:00.000Z",
+          "assignment_reason": "Subject matter expertise and availability"
+        }
+      },
+      "enrollment_details": {
+        "_id": "507f1f77bcf86cd799439044",
+        "enrollment_date": "2024-08-25T12:00:00.000Z",
+        "status": "enrolled",
+        "grade": null,
+        "drop_date": null,
+        "completion_date": null,
+        "enrollment_approved_by": {
+          "_id": "507f1f77bcf86cd799439001",
+          "username": "admin1",
+          "first_name": "Dr. Robert",
+          "last_name": "Wilson",
+          "approval_date": "2024-08-25T12:15:00.000Z",
+          "approval_notes": "Prerequisites verified, enrollment approved"
+        }
+      },
+      "assignments": [
+        {
+          "_id": "507f1f77bcf86cd799439055",
+          "title": "Problem Set 1",
+          "description": "Complete the problem set 1 as outlined in the course materials.",
+          "assignment_type": "homework",
+          "total_points": 100,
+          "due_date": "2025-01-15T23:59:00.000Z",
+          "created_date": "2024-12-01T10:00:00.000Z",
+          "is_published": true,
+          "instructions": "Detailed instructions for Problem Set 1. Please follow the guidelines carefully.",
+          "attachments": [],
+          "submission": {
+            "_id": "507f1f77bcf86cd799439066",
+            "submission_date": "2025-01-14T20:30:00.000Z",
+            "content": "Student submission for Problem Set 1",
+            "attachments": [],
+            "status": "submitted",
+            "score": 85,
+            "feedback": "Good work on Problem Set 1. Score: 85/100",
+            "graded_date": "2025-01-16T09:15:00.000Z",
+            "graded_by": {
+              "_id": "507f1f77bcf86cd799439033",
+              "first_name": "Dr. Sarah",
+              "last_name": "Johnson",
+              "email": "teacher1@university.edu"
+            }
+          }
+        },
+        {
+          "_id": "507f1f77bcf86cd799439077",
+          "title": "Final Project",
+          "description": "Complete the final project as outlined in the course materials.",
+          "assignment_type": "project",
+          "total_points": 200,
+          "due_date": "2025-02-28T23:59:00.000Z",
+          "created_date": "2024-12-15T14:00:00.000Z",
+          "is_published": true,
+          "instructions": "Detailed instructions for Final Project. Please follow the guidelines carefully.",
+          "attachments": [],
+          "submission": null
+        }
+      ],
+      "quizzes": [
+        {
+          "_id": "507f1f77bcf86cd799439088",
+          "title": "Quiz 1",
+          "description": "Quiz covering recent course material.",
+          "quiz_type": "multiple_choice",
+          "total_points": 50,
+          "time_limit": 60,
+          "due_date": "2025-01-20T23:59:00.000Z",
+          "start_date": "2025-01-18T00:00:00.000Z",
+          "is_published": true,
+          "created_date": "2024-12-10T11:00:00.000Z",
+          "questions": [
+            {
+              "question_text": "What is the correct answer to question 1?",
+              "question_type": "multiple_choice",
+              "options": ["Option A", "Option B", "Option C", "Option D"],
+              "correct_answer": "Option A",
+              "points": 10
+            },
+            {
+              "question_text": "What is the correct answer to question 2?",
+              "question_type": "multiple_choice",
+              "options": ["Option A", "Option B", "Option C", "Option D"],
+              "correct_answer": "Option B",
+              "points": 10
+            },
+            {
+              "question_text": "What is the correct answer to question 3?",
+              "question_type": "multiple_choice",
+              "options": ["Option A", "Option B", "Option C", "Option D"],
+              "correct_answer": "Option C",
+              "points": 10
+            },
+            {
+              "question_text": "What is the correct answer to question 4?",
+              "question_type": "multiple_choice",
+              "options": ["Option A", "Option B", "Option C", "Option D"],
+              "correct_answer": "Option D",
+              "points": 10
+            },
+            {
+              "question_text": "What is the correct answer to question 5?",
+              "question_type": "multiple_choice",
+              "options": ["Option A", "Option B", "Option C", "Option D"],
+              "correct_answer": "Option A",
+              "points": 10
+            }
+          ],
+          "submission": {
+            "_id": "507f1f77bcf86cd799439099",
+            "submission_date": "2025-01-19T15:45:00.000Z",
+            "content": null,
+            "attachments": [],
+            "status": "graded",
+            "answers": [
+              {
+                "question_index": 0,
+                "answer": "Option A",
+                "is_correct": true,
+                "points_earned": 10
+              },
+              {
+                "question_index": 1,
+                "answer": "Option A",
+                "is_correct": false,
+                "points_earned": 0
+              },
+              {
+                "question_index": 2,
+                "answer": "Option C",
+                "is_correct": true,
+                "points_earned": 10
+              },
+              {
+                "question_index": 3,
+                "answer": "Option D",
+                "is_correct": true,
+                "points_earned": 10
+              },
+              {
+                "question_index": 4,
+                "answer": "Option B",
+                "is_correct": false,
+                "points_earned": 0
+              }
+            ],
+            "total_score": 30,
+            "time_taken": 45,
+            "graded_date": "2025-01-19T16:30:00.000Z",
+            "graded_by": {
+              "_id": "507f1f77bcf86cd799439033",
+              "first_name": "Dr. Sarah",
+              "last_name": "Johnson",
+              "email": "teacher1@university.edu"
+            }
+          }
+        }
+      ],
+      "grade_record": {
+        "_id": "507f1f77bcf86cd799439110",
+        "components": [
+          {
+            "component_type": "assignment",
+            "component_id": "507f1f77bcf86cd799439055",
+            "name": "Problem Set 1",
+            "points_earned": 85,
+            "total_points": 100,
+            "weight": 1.0
+          },
+          {
+            "component_type": "assignment",
+            "component_id": "507f1f77bcf86cd799439077",
+            "name": "Final Project",
+            "points_earned": 0,
+            "total_points": 200,
+            "weight": 1.0
+          },
+          {
+            "component_type": "quiz",
+            "component_id": "507f1f77bcf86cd799439088",
+            "name": "Quiz 1",
+            "points_earned": 30,
+            "total_points": 50,
+            "weight": 1.0
+          }
+        ],
+        "final_grade": "C",
+        "final_percentage": 73.33,
+        "calculated_at": "2025-01-20T10:00:00.000Z"
+      },
+      "attendance_records": [
+        {
+          "_id": "507f1f77bcf86cd799439121",
+          "date": "2025-01-15T00:00:00.000Z",
+          "is_present": true,
+          "recorded_by": {
+            "_id": "507f1f77bcf86cd799439033",
+            "first_name": "Dr. Sarah",
+            "last_name": "Johnson"
+          },
+          "recorded_at": "2025-01-15T10:30:00.000Z"
+        },
+        {
+          "_id": "507f1f77bcf86cd799439132",
+          "date": "2025-01-13T00:00:00.000Z",
+          "is_present": true,
+          "recorded_by": {
+            "_id": "507f1f77bcf86cd799439033",
+            "first_name": "Dr. Sarah",
+            "last_name": "Johnson"
+          },
+          "recorded_at": "2025-01-13T10:30:00.000Z"
+        },
+        {
+          "_id": "507f1f77bcf86cd799439143",
+          "date": "2025-01-11T00:00:00.000Z",
+          "is_present": false,
+          "recorded_by": {
+            "_id": "507f1f77bcf86cd799439033",
+            "first_name": "Dr. Sarah",
+            "last_name": "Johnson"
+          },
+          "recorded_at": "2025-01-11T10:30:00.000Z"
+        }
+      ],
+      "feedback": [
+        {
+          "student_id": "507f1f77bcf86cd799439011",
+          "rating": 4,
+          "comment": "Great course! Very informative and well-structured.",
+          "date_posted": "2025-01-10T16:20:00.000Z"
+        }
+      ]
+    },
+    {
+      "_id": "507f1f77bcf86cd799439154",
+      "course_code": "MATH201",
+      "course_name": "Calculus I",
+      "description": "A comprehensive course covering calculus i concepts and applications.",
+      "credits": 4,
+      "department": "Mathematics",
+      "max_capacity": 60,
+      "current_enrollment": 38,
+      "semester": "Spring 2025",
+      "year": 2025,
+      "schedule_info": "Tuesday, Thursday 14:00-15:30, Room 305",
+      "created_at": "2024-09-01T10:00:00.000Z",
+      "updated_at": "2024-12-15T16:30:00.000Z",
+      "course_created_by": {
+        "_id": "507f1f77bcf86cd799439003",
+        "username": "admin3",
+        "email": "admin3@university.edu",
+        "first_name": "Dr. James",
+        "last_name": "Anderson",
+        "role": "admin",
+        "department": "Mathematics Department Head",
+        "created_at": "2024-08-10T11:15:00.000Z"
+      },
+      "teacher": {
+        "_id": "507f1f77bcf86cd799439165",
+        "username": "teacher5",
+        "email": "teacher5@university.edu",
+        "password_hash": "$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/.BSqwbgKaEq32xw6e",
+        "first_name": "Dr. Michael",
+        "last_name": "Davis",
+        "role": "teacher",
+        "is_active": true,
+        "date_joined": "2023-07-15T09:00:00.000Z",
+        "last_login": "2024-12-19T15:20:00.000Z",
+        "teacher_id_str": "T1005",
+        "department": "Mathematics",
+        "assigned_by": {
+          "_id": "507f1f77bcf86cd799439003",
+          "username": "admin3",
+          "first_name": "Dr. James",
+          "last_name": "Anderson",
+          "assignment_date": "2024-08-12T14:20:00.000Z",
+          "assignment_reason": "Expertise in calculus and student engagement"
+        }
+      },
+      "enrollment_details": {
+        "_id": "507f1f77bcf86cd799439176",
+        "enrollment_date": "2024-08-25T14:30:00.000Z",
+        "status": "enrolled",
+        "grade": null,
+        "drop_date": null,
+        "completion_date": null,
+        "enrollment_approved_by": {
+          "_id": "507f1f77bcf86cd799439001",
+          "username": "admin1",
+          "first_name": "Dr. Robert",
+          "last_name": "Wilson",
+          "approval_date": "2024-08-25T14:45:00.000Z",
+          "approval_notes": "Math prerequisites met, enrollment approved"
+        }
+      },
+      "assignments": [
+        {
+          "_id": "507f1f77bcf86cd799439187",
+          "title": "Practice Problems 1",
+          "description": "Complete the practice problems 1 as outlined in the course materials.",
+          "assignment_type": "homework",
+          "total_points": 80,
+          "due_date": "2025-01-18T23:59:00.000Z",
+          "created_date": "2024-12-05T11:00:00.000Z",
+          "is_published": true,
+          "instructions": "Detailed instructions for Practice Problems 1. Please follow the guidelines carefully.",
+          "attachments": [],
+          "submission": {
+            "_id": "507f1f77bcf86cd799439198",
+            "submission_date": "2025-01-17T19:15:00.000Z",
+            "content": "Student submission for Practice Problems 1",
+            "attachments": [],
+            "status": "submitted",
+            "score": 72,
+            "feedback": "Good work on Practice Problems 1. Score: 72/80",
+            "graded_date": "2025-01-19T11:45:00.000Z",
+            "graded_by": {
+              "_id": "507f1f77bcf86cd799439165",
+              "first_name": "Dr. Michael",
+              "last_name": "Davis",
+              "email": "teacher5@university.edu"
+            }
+          }
+        }
+      ],
+      "quizzes": [
+        {
+          "_id": "507f1f77bcf86cd799439209",
+          "title": "Quiz 1",
+          "description": "Quiz covering recent course material.",
+          "quiz_type": "short_answer",
+          "total_points": 75,
+          "time_limit": 90,
+          "due_date": "2025-01-22T23:59:00.000Z",
+          "start_date": "2025-01-20T00:00:00.000Z",
+          "is_published": true,
+          "created_date": "2024-12-12T13:00:00.000Z",
+          "questions": [
+            {
+              "question_text": "Provide a brief answer to question 1.",
+              "question_type": "short_answer",
+              "options": null,
+              "correct_answer": "Sample answer",
+              "points": 15
+            },
+            {
+              "question_text": "Provide a brief answer to question 2.",
+              "question_type": "short_answer",
+              "options": null,
+              "correct_answer": "Sample answer",
+              "points": 15
+            },
+            {
+              "question_text": "Provide a brief answer to question 3.",
+              "question_type": "short_answer",
+              "options": null,
+              "correct_answer": "Sample answer",
+              "points": 15
+            },
+            {
+              "question_text": "Provide a brief answer to question 4.",
+              "question_type": "short_answer",
+              "options": null,
+              "correct_answer": "Sample answer",
+              "points": 15
+            },
+            {
+              "question_text": "Provide a brief answer to question 5.",
+              "question_type": "short_answer",
+              "options": null,
+              "correct_answer": "Sample answer",
+              "points": 15
+            }
+          ],
+          "submission": null
+        }
+      ],
+      "grade_record": {
+        "_id": "507f1f77bcf86cd799439220",
+        "components": [
+          {
+            "component_type": "assignment",
+            "component_id": "507f1f77bcf86cd799439187",
+            "name": "Practice Problems 1",
+            "points_earned": 72,
+            "total_points": 80,
+            "weight": 1.0
+          },
+          {
+            "component_type": "quiz",
+            "component_id": "507f1f77bcf86cd799439209",
+            "name": "Quiz 1",
+            "points_earned": 0,
+            "total_points": 75,
+            "weight": 1.0
+          }
+        ],
+        "final_grade": "C-",
+        "final_percentage": 71.61,
+        "calculated_at": "2025-01-19T12:00:00.000Z"
+      },
+      "attendance_records": [
+        {
+          "_id": "507f1f77bcf86cd799439231",
+          "date": "2025-01-16T00:00:00.000Z",
+          "is_present": true,
+          "recorded_by": {
+            "_id": "507f1f77bcf86cd799439165",
+            "first_name": "Dr. Michael",
+            "last_name": "Davis"
+          },
+          "recorded_at": "2025-01-16T14:30:00.000Z"
+        },
+        {
+          "_id": "507f1f77bcf86cd799439242",
+          "date": "2025-01-14T00:00:00.000Z",
+          "is_present": true,
+          "recorded_by": {
+            "_id": "507f1f77bcf86cd799439165",
+            "first_name": "Dr. Michael",
+            "last_name": "Davis"
+          },
+          "recorded_at": "2025-01-14T14:30:00.000Z"
+        }
+      ],
+      "feedback": []
+    }
+  ],
+  "calendar_events": [
+    {
+      "_id": "507f1f77bcf86cd799439253",
+      "title": "Problem Set 1 Due",
+      "description": "Assignment due date for Introduction to Programming",
+      "event_type": "assignment",
+      "start_datetime": "2025-01-15T23:59:00.000Z",
+      "end_datetime": "2025-01-16T00:59:00.000Z",
+      "created_by": {
+        "_id": "507f1f77bcf86cd799439033",
+        "first_name": "Dr. Sarah",
+        "last_name": "Johnson",
+        "email": "teacher1@university.edu"
+      },
+      "related_course": {
+        "_id": "507f1f77bcf86cd799439022",
+        "course_code": "CS101",
+        "course_name": "Introduction to Programming"
+      },
+      "created_at": "2024-12-01T10:00:00.000Z"
+    },
+    {
+      "_id": "507f1f77bcf86cd799439264",
+      "title": "Quiz 1 - Introduction to Programming",
+      "description": "Quiz for Introduction to Programming",
+      "event_type": "quiz",
+      "start_datetime": "2025-01-18T00:00:00.000Z",
+      "end_datetime": "2025-01-20T23:59:00.000Z",
+      "created_by": {
+        "_id": "507f1f77bcf86cd799439033",
+        "first_name": "Dr. Sarah",
+        "last_name": "Johnson",
+        "email": "teacher1@university.edu"
+      },
+      "related_course": {
+        "_id": "507f1f77bcf86cd799439022",
+        "course_code": "CS101",
+        "course_name": "Introduction to Programming"
+      },
+      "created_at": "2024-12-10T11:00:00.000Z"
+    },
+    {
+      "_id": "507f1f77bcf86cd799439275",
+      "title": "Practice Problems 1 Due",
+      "description": "Assignment due date for Calculus I",
+      "event_type": "assignment",
+      "start_datetime": "2025-01-18T23:59:00.000Z",
+      "end_datetime": "2025-01-19T00:59:00.000Z",
+      "created_by": {
+        "_id": "507f1f77bcf86cd799439165",
+        "first_name": "Dr. Michael",
+        "last_name": "Davis",
+        "email": "teacher5@university.edu"
+      },
+      "related_course": {
+        "_id": "507f1f77bcf86cd799439154",
+        "course_code": "MATH201",
+        "course_name": "Calculus I"
+      },
+      "created_at": "2024-12-05T11:00:00.000Z"
+    },
+    {
+      "_id": "507f1f77bcf86cd799439286",
+      "title": "Midterm Exam - Introduction to Programming",
+      "description": "Midterm examination for Introduction to Programming",
+      "event_type": "exam",
+      "start_datetime": "2025-02-15T10:00:00.000Z",
+      "end_datetime": "2025-02-15T12:00:00.000Z",
+      "created_by": {
+        "_id": "507f1f77bcf86cd799439033",
+        "first_name": "Dr. Sarah",
+        "last_name": "Johnson",
+        "email": "teacher1@university.edu"
+      },
+      "related_course": {
+        "_id": "507f1f77bcf86cd799439022",
+        "course_code": "CS101",
+        "course_name": "Introduction to Programming"
+      },
+      "created_at": "2024-11-20T09:00:00.000Z"
+    },
+    {
+      "_id": "507f1f77bcf86cd799439287",
+      "title": "Final Exam Schedule Release",
+      "description": "Final examination schedule has been published by Academic Affairs",
+      "event_type": "announcement",
+      "start_datetime": "2025-02-01T09:00:00.000Z",
+      "end_datetime": "2025-02-01T17:00:00.000Z",
+      "created_by": {
+        "_id": "507f1f77bcf86cd799439001",
+        "first_name": "Dr. Robert",
+        "last_name": "Wilson",
+        "email": "admin1@university.edu",
+        "role": "admin"
+      },
+      "related_course": null,
+      "created_at": "2025-01-25T08:00:00.000Z"
+    }
+  ],
+  "notifications": [
+    {
+      "_id": "507f1f77bcf86cd799439297",
+      "title": "New Assignment Posted",
+      "message": "A new assignment has been posted in Introduction to Programming",
+      "notification_type": "assignment",
+      "is_read": false,
+      "created_at": "2024-12-01T10:15:00.000Z",
+      "read_at": null,
+      "related_course": {
+        "_id": "507f1f77bcf86cd799439022",
+        "course_code": "CS101",
+        "course_name": "Introduction to Programming"
+      },
+      "related_assignment": {
+        "_id": "507f1f77bcf86cd799439055",
+        "title": "Problem Set 1"
+      }
+    },
+    {
+      "_id": "507f1f77bcf86cd799439308",
+      "title": "Grade Posted",
+      "message": "Your grade has been posted for Introduction to Programming",
+      "notification_type": "grade",
+      "is_read": true,
+      "created_at": "2025-01-16T09:30:00.000Z",
+      "read_at": "2025-01-16T14:20:00.000Z",
+      "related_course": {
+        "_id": "507f1f77bcf86cd799439022",
+        "course_code": "CS101",
+        "course_name": "Introduction to Programming"
+      },
+      "related_assignment": {
+        "_id": "507f1f77bcf86cd799439055",
+        "title": "Problem Set 1"
+      }
+    },
+    {
+      "_id": "507f1f77bcf86cd799439319",
+      "title": "Enrollment Confirmed",
+      "message": "Your enrollment in Calculus I has been confirmed",
+      "notification_type": "enrollment",
+      "is_read": true,
+      "created_at": "2024-08-25T15:00:00.000Z",
+      "read_at": "2024-08-25T16:45:00.000Z",
+      "related_course": {
+        "_id": "507f1f77bcf86cd799439154",
+        "course_code": "MATH201",
+        "course_name": "Calculus I"
+      },
+      "related_assignment": null
+    },
+    {
+      "_id": "507f1f77bcf86cd799439320",
+      "title": "Course Announcement",
+      "message": "New announcement in Introduction to Programming",
+      "notification_type": "announcement",
+      "is_read": false,
+      "created_at": "2024-12-18T11:30:00.000Z",
+      "read_at": null,
+      "related_course": {
+        "_id": "507f1f77bcf86cd799439022",
+        "course_code": "CS101",
+        "course_name": "Introduction to Programming"
+      },
+      "related_assignment": null
+    },
+    {
+      "_id": "507f1f77bcf86cd799439321",
+      "title": "System Maintenance Notice",
+      "message": "The university management system will undergo scheduled maintenance on January 25, 2025, from 2:00 AM to 4:00 AM. During this time, the system will be temporarily unavailable.",
+      "notification_type": "system",
+      "is_read": false,
+      "created_at": "2025-01-20T09:00:00.000Z",
+      "read_at": null,
+      "created_by": {
+        "_id": "507f1f77bcf86cd799439001",
+        "username": "admin1",
+        "first_name": "Dr. Robert",
+        "last_name": "Wilson",
+        "role": "admin",
+        "department": "Academic Affairs"
+      },
+      "related_course": null,
+      "related_assignment": null
+    },
+    {
+      "_id": "507f1f77bcf86cd799439322",
+      "title": "Academic Policy Update",
+      "message": "New academic policies regarding course withdrawal deadlines have been updated. Please review the updated student handbook for details.",
+      "notification_type": "policy",
+      "is_read": false,
+      "created_at": "2025-01-10T14:30:00.000Z",
+      "read_at": null,
+      "created_by": {
+        "_id": "507f1f77bcf86cd799439002",
+        "username": "admin2",
+        "first_name": "Dr. Emily",
+        "last_name": "Martinez",
+        "role": "admin",
+        "department": "Computer Science Department Head"
+      },
+      "related_course": null,
+      "related_assignment": null
+    }
+  ],
+  "administrative_records": {
+    "account_management": {
+      "created_by": {
+        "_id": "507f1f77bcf86cd799439001",
+        "username": "admin1",
+        "first_name": "Dr. Robert",
+        "last_name": "Wilson",
+        "role": "admin",
+        "department": "Academic Affairs"
+      },
+      "creation_date": "2024-01-15T08:30:00.000Z",
+      "last_modified_by": {
+        "_id": "507f1f77bcf86cd799439001",
+        "username": "admin1",
+        "first_name": "Dr. Robert",
+        "last_name": "Wilson"
+      },
+      "last_modification_date": "2024-12-10T10:15:00.000Z",
+      "account_status_changes": [
+        {
+          "change_date": "2024-01-15T08:30:00.000Z",
+          "previous_status": null,
+          "new_status": "active",
+          "changed_by": {
+            "_id": "507f1f77bcf86cd799439001",
+            "username": "admin1",
+            "first_name": "Dr. Robert",
+            "last_name": "Wilson"
+          },
+          "reason": "Initial account creation"
+        }
+      ]
+    },
+    "enrollment_management": {
+      "total_enrollments_processed": 2,
+      "all_enrollments": [
+        {
+          "course_code": "CS101",
+          "course_name": "Introduction to Programming",
+          "processed_by": {
+            "_id": "507f1f77bcf86cd799439001",
+            "username": "admin1",
+            "first_name": "Dr. Robert",
+            "last_name": "Wilson"
+          },
+          "processing_date": "2024-08-25T12:15:00.000Z",
+          "status": "approved"
+        },
+        {
+          "course_code": "MATH201",
+          "course_name": "Calculus I",
+          "processed_by": {
+            "_id": "507f1f77bcf86cd799439001",
+            "username": "admin1",
+            "first_name": "Dr. Robert",
+            "last_name": "Wilson"
+          },
+          "processing_date": "2024-08-25T14:45:00.000Z",
+          "status": "approved"
+        }
+      ]
+    },
+    "system_interactions": {
+      "reports_generated": [
+        {
+          "_id": "507f1f77bcf86cd799439400",
+          "report_type": "academic_transcript",
+          "generated_by": {
+            "_id": "507f1f77bcf86cd799439001",
+            "username": "admin1",
+            "first_name": "Dr. Robert",
+            "last_name": "Wilson"
+          },
+          "generation_date": "2024-12-15T11:30:00.000Z",
+          "report_parameters": {
+            "semester": "Fall 2024",
+            "include_grades": true,
+            "include_attendance": false
+          }
+        }
+      ],
+      "system_notifications_sent": 2,
+      "policy_updates_applied": 1
+    }
+  },
+  "academic_summary": {
+    "total_enrolled_courses": 2,
+    "total_completed_courses": 0,
+    "total_dropped_courses": 0,
+    "current_gpa": 2.47,
+    "total_credits_enrolled": 7,
+    "total_credits_completed": 0,
+    "academic_standing": "Good Standing",
+    "total_assignments_submitted": 2,
+    "total_assignments_pending": 1,
+    "total_quizzes_taken": 1,
+    "total_quizzes_pending": 1,
+    "overall_attendance_rate": 83.33,
+    "total_notifications": 6,
+    "unread_notifications": 4,
+    "admin_interactions": {
+      "account_creation": "2024-01-15T08:30:00.000Z",
+      "enrollment_approvals": 2,
+      "system_notifications_received": 2,
+      "reports_generated": 1
+    }
+  }
+} 

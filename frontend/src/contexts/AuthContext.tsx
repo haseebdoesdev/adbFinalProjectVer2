@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // Types
 export interface User {
-  id: string;
+  _id: string; // MongoDB uses _id, not id
   username: string;
   email: string;
   role: 'student' | 'teacher' | 'admin';
@@ -13,6 +13,11 @@ export interface User {
   teacher_id_str?: string;
   major?: string;
   department?: string;
+  date_joined?: string;
+  is_active?: boolean;
+  last_login?: string;
+  enrolled_courses?: string[];
+  courses_teaching?: string[];
 }
 
 interface AuthContextType {

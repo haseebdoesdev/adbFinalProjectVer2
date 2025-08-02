@@ -156,7 +156,15 @@ A comprehensive, modern university management system featuring three distinct po
 - MongoDB 5.0+
 - npm or yarn
 
-### Backend Setup
+### Quick Start (Recommended)
+```bash
+# Run the automated setup script
+python start_application.py
+```
+
+This will check prerequisites, install dependencies, initialize the database, and start both servers.
+
+### Manual Backend Setup
 ```bash
 # Navigate to backend directory
 cd backend
@@ -164,13 +172,11 @@ cd backend
 # Install Python dependencies
 pip install -r requirements.txt
 
-# Set environment variables
-export SECRET_KEY="your-secret-key"
-export MONGO_URI="mongodb://localhost:27017/university_ms"
-export JWT_SECRET_KEY="your-jwt-secret"
+# Create environment file
+cp .env.example .env
 
-# Initialize database indexes
-python -c "from utils.database import DatabaseUtils; DatabaseUtils.create_indexes()"
+# Initialize database
+python init_database.py
 
 # Run the Flask server
 python app.py
@@ -205,17 +211,19 @@ mongoimport --db university_ms --collection users --file sample_data/users.json
 ### Demo Credentials
 The system comes with pre-configured demo accounts:
 
-**Student Account**
-- Username: `student1`
-- Password: `password123`
-
-**Teacher Account**
-- Username: `teacher1`
-- Password: `password123`
-
 **Admin Account**
-- Username: `admin1`
-- Password: `password123`
+- Email: `admin@university.edu`
+- Password: `admin123`
+
+**Teacher Account (Sample)**
+- Email: `smith@university.edu`
+- Password: `teacher123`
+
+**Student Account (Sample)**
+- Email: `student1@university.edu`
+- Password: `student123`
+
+⚠️ **Important**: Change default passwords after first login!
 
 ### API Endpoints
 

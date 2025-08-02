@@ -1,10 +1,14 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
-from config import Config
+from config import config
 from extensions import mongo, bcrypt, jwt
 import os
 
-def create_app(config_class=Config):
+def create_app(config_name=None):
+    if config_name is None:
+        config_name = os.environ.get('FLASK_CONFIG', 'default')
+    
+    config_class = config[config_name]
     app = Flask(__name__)
     app.config.from_object(config_class)
 
@@ -14,7 +18,7 @@ def create_app(config_class=Config):
     jwt.init_app(app)
     
     # Enable CORS for cross-origin requests
-    CORS(app, origins=["http://localhost:3000", "http://127.0.0.1:3000"])
+    CORS(app, origins=app.config.get('CORS_ORIGINS', ["http://localhost:3000", "http://127.0.0.1:3000"]))
 
     # Import blueprints here to avoid circular imports
     from routes.auth_routes import auth_bp
@@ -66,17 +70,33 @@ def create_app(config_class=Config):
     @app.route('/api/health')
     def health_check():
         try:
-            # Check database connection
-            mongo.db.command('ping')
-            return jsonify({
-                "status": "healthy",
-                "database": "connected",
-                "version": "1.0.0"
-            }), 200
+            from utils.database import DatabaseUtils
+            
+            # Get comprehensive health check
+            health_status = DatabaseUtils.health_check()
+            
+            if health_status.get('overall_status') == 'healthy':
+                return jsonify({
+                    "status": "healthy",
+                    "database": "connected",
+                    "version": "1.0.0",
+                    "timestamp": health_status.get('timestamp'),
+                    "details": health_status.get('checks', {})
+                }), 200
+            else:
+                return jsonify({
+                    "status": "unhealthy",
+                    "database": "issues_detected",
+                    "version": "1.0.0",
+                    "timestamp": health_status.get('timestamp'),
+                    "details": health_status.get('checks', {}),
+                    "error": health_status.get('error')
+                }), 503
         except Exception as e:
             return jsonify({
                 "status": "unhealthy",
                 "database": "disconnected",
+                "version": "1.0.0",
                 "error": str(e)
             }), 503
 
@@ -97,17 +117,37 @@ def create_app(config_class=Config):
     with app.app_context():
         try:
             from utils.database import DatabaseUtils
+            print("Initializing database indexes...")
             DatabaseUtils.create_indexes()
             print("Database indexes initialized successfully")
+            
+            # Perform health check
+            health_status = DatabaseUtils.health_check()
+            if health_status.get('overall_status') == 'healthy':
+                print("Database health check: PASSED")
+            else:
+                print(f"Database health check: FAILED - {health_status}")
+                
         except Exception as e:
             print(f"Error initializing database: {e}")
+            print("Application will continue but some features may not work properly")
+    
+    # Initialize configuration
+    config_class.init_app(app)
 
     return app
 
 if __name__ == '__main__':
     app = create_app()
+    port = int(os.environ.get('PORT', 5000))
+    debug = app.config.get('DEBUG', False)
+    
+    print(f"Starting Flask app on port {port}")
+    print(f"Debug mode: {debug}")
+    print(f"Environment: {os.environ.get('FLASK_CONFIG', 'default')}")
+    
     app.run(
-        debug=True, 
-        host='0.0.0.0',
-        port=int(os.environ.get('PORT', 5000))
+        debug=debug, 
+        host='0.0.0.0' if not debug else '127.0.0.1',  # Only bind to all interfaces in production
+        port=port
     ) 

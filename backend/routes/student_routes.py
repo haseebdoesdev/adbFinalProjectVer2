@@ -181,11 +181,17 @@ def get_available_courses(user_id):
     except Exception as e:
         return jsonify({"message": "Failed to retrieve available courses", "error": str(e)}), 500
 
-@student_bp.route('/courses/enroll/<string:course_id_str>', methods=['POST'])
+@student_bp.route('/courses/enroll', methods=['POST'])
 @role_required('student')
-def enroll_in_course(user_id, course_id_str):
+def enroll_in_course(user_id):
     """Enroll a student in a course."""
     try:
+        data = request.get_json()
+        course_id_str = data.get('course_id')
+        
+        if not course_id_str:
+            return jsonify({"message": "Course ID is required"}), 400
+            
         course_id = ObjectId(course_id_str)
     except Exception:
         return jsonify({"message": "Invalid course ID format"}), 400

@@ -4,6 +4,8 @@ from extensions import mongo
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from bson import ObjectId
 from datetime import datetime
+from utils.database import DatabaseUtils, query_cache
+from utils.security import sanitize_input
 try:
     from dateutil.parser import parse as parse_date
 except ImportError:
@@ -19,31 +21,10 @@ except ImportError:
 
 teacher_bp = Blueprint('teacher_bp', __name__)
 
-# Utility function to serialize ObjectIds in documents
+# Legacy compatibility for existing code
 def serialize_document(doc):
-    """Convert all ObjectIds and datetime objects in a document to strings"""
-    import copy
-    from bson import ObjectId as BSONObjectId
-    doc = copy.deepcopy(doc)  # Avoid modifying the original document
-    
-    def convert_value(value):
-        """Recursively convert ObjectIds and datetime objects to strings"""
-        if value is None:  # Handle None values
-            return None
-        elif isinstance(value, BSONObjectId):  # More explicit ObjectId check
-            return str(value)
-        elif hasattr(value, 'hex'):  # Fallback ObjectId check
-            return str(value)
-        elif isinstance(value, datetime):
-            return value.isoformat()
-        elif isinstance(value, dict):
-            return {k: convert_value(v) for k, v in value.items()}
-        elif isinstance(value, list):
-            return [convert_value(item) for item in value]
-        else:
-            return value
-    
-    return {k: convert_value(v) for k, v in doc.items()}
+    """Legacy wrapper for DatabaseUtils.serialize_doc"""
+    return DatabaseUtils.serialize_doc(doc)
 
 # --- Helper for Role-Based Access Control ---
 def role_required(role_name):

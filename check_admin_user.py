@@ -16,7 +16,7 @@ def check_admin_users():
     try:
         # Connect to MongoDB
         client = MongoClient('mongodb://localhost:27017/')
-        db = client['student_management_system']
+        db = client['university_ms']
         
         print("🔍 Checking admin users in database...")
         print("=" * 50)

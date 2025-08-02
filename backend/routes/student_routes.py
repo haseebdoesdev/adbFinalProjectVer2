@@ -7,6 +7,8 @@ from datetime import datetime
 import os
 from werkzeug.utils import secure_filename
 import uuid
+from utils.database import DatabaseUtils, query_cache
+from utils.security import sanitize_input, validate_file_upload
 
 student_bp = Blueprint('student_bp', __name__)
 

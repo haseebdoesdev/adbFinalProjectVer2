@@ -4,7 +4,7 @@ from extensions import mongo
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from bson import ObjectId # For converting string ID to MongoDB ObjectId
 from datetime import datetime, timedelta
-from utils.database import DatabaseUtils
+from utils.database import DatabaseUtils, query_cache
 import calendar
 
 admin_bp = Blueprint('admin_bp', __name__)
@@ -95,11 +95,31 @@ def create_course():
 @admin_bp.route('/courses', methods=['GET'])
 @role_required('admin') # Or allow teachers/students to view all courses too
 def get_all_courses():
+    """Get all courses with pagination support."""
     try:
-        courses_cursor = mongo.db.courses.find()
-        courses_list = list(courses_cursor)
-        serialized_courses = DatabaseUtils.serialize_docs(courses_list)
-        return jsonify(serialized_courses), 200
+        # Get pagination parameters
+        page = int(request.args.get('page', 1))
+        per_page = min(int(request.args.get('per_page', 20)), 100)  # Max 100 per page
+        department = request.args.get('department')
+        sort_field = request.args.get('sort', 'created_at')
+        sort_direction = -1 if request.args.get('order', 'desc') == 'desc' else 1
+        
+        # Build query
+        query = {}
+        if department:
+            query['department'] = department
+        
+        # Use pagination utility
+        result = DatabaseUtils.paginate_query(
+            'courses', 
+            query=query, 
+            page=page, 
+            per_page=per_page,
+            sort_field=sort_field,
+            sort_direction=sort_direction
+        )
+        
+        return jsonify(result), 200
     except Exception as e:
         return jsonify({"message": "Failed to retrieve courses", "error": str(e)}), 500
 
@@ -148,15 +168,32 @@ def update_course(course_id):
 @admin_bp.route('/courses/<string:course_id>', methods=['DELETE'])
 @role_required('admin')
 def delete_course(course_id):
-    # Consider implications: what happens to enrolled students? assignments? etc.
-    # For now, a simple delete. Could be a soft delete (mark as inactive).
+    """Delete a course and all related data using cascade delete."""
     try:
-        result = mongo.db.courses.delete_one({"_id": ObjectId(course_id)})
-        if result.deleted_count == 0:
+        # Use cascade delete with proper transaction handling
+        result = DatabaseUtils.cascade_delete_course(ObjectId(course_id))
+        
+        if result.get('course_deleted'):
+            # Invalidate cache
+            query_cache.invalidate_pattern('courses')
+            query_cache.invalidate_pattern('enrollments')
+            
+            return jsonify({
+                "message": "Course deleted successfully",
+                "details": {
+                    "enrollments_deleted": result.get('enrollments', 0),
+                    "assignments_deleted": result.get('assignments', 0),
+                    "assignment_submissions_deleted": result.get('assignment_submissions', 0),
+                    "quizzes_deleted": result.get('quizzes', 0),
+                    "quiz_submissions_deleted": result.get('quiz_submissions', 0),
+                    "grades_deleted": result.get('grades', 0),
+                    "attendance_deleted": result.get('attendance', 0),
+                    "calendar_events_deleted": result.get('calendar_events', 0),
+                    "notifications_deleted": result.get('notifications', 0)
+                }
+            }), 200
+        else:
             return jsonify({"message": "Course not found or already deleted"}), 404
-        # TODO: Also remove from teacher's courses_teaching list and student's enrolled_courses list.
-        # This might require transactions or a more complex cleanup logic.
-        return jsonify({"message": "Course deleted successfully"}), 200
     except Exception as e:
         return jsonify({"message": "Failed to delete course", "error": str(e)}), 500
 
@@ -184,19 +221,20 @@ def assign_teacher_to_course(course_id):
     if not course:
         return jsonify({"message": "Course not found"}), 404
 
-    # 3. Atomically update course and teacher (Ideally in a transaction)
-    # For simplicity, we do two separate updates. Consider transactions for production.
-    try:
+    # 3. Atomically update course and teacher using transactions
+    def assign_teacher_operations(session):
         # Update course with new teacher_id
         mongo.db.courses.update_one(
             {"_id": ObjectId(course_id)},
-            {"$set": {"teacher_id": teacher_object_id, "updated_at": datetime.utcnow()}}
+            {"$set": {"teacher_id": teacher_object_id, "updated_at": datetime.utcnow()}},
+            session=session
         )
 
         # Add course to teacher's list of courses_teaching (if not already present)
         mongo.db.users.update_one(
             {"_id": teacher_object_id},
-            {"$addToSet": {"courses_teaching": ObjectId(course_id)}}
+            {"$addToSet": {"courses_teaching": ObjectId(course_id)}},
+            session=session
         )
         
         # If there was an old teacher, remove this course from their list
@@ -204,10 +242,30 @@ def assign_teacher_to_course(course_id):
         if old_teacher_id and old_teacher_id != teacher_object_id:
             mongo.db.users.update_one(
                 {"_id": old_teacher_id},
-                {"$pull": {"courses_teaching": ObjectId(course_id)}}
+                {"$pull": {"courses_teaching": ObjectId(course_id)}},
+                session=session
             )
+        
+        return {"teacher": teacher['username'], "course": course['course_code']}
 
-        return jsonify({"message": f"Teacher {teacher['username']} assigned to course {course['course_code']}"}), 200
+    try:
+        # Execute transaction
+        result = DatabaseUtils.safe_execute_transaction([assign_teacher_operations])
+        
+        if result.get('success'):
+            # Invalidate relevant cache entries
+            query_cache.invalidate_pattern('courses')
+            query_cache.invalidate_pattern('users')
+            
+            return jsonify({
+                "message": f"Teacher {teacher['username']} assigned to course {course['course_code']}",
+                "attempt": result.get('attempt', 1)
+            }), 200
+        else:
+            return jsonify({
+                "message": "Failed to assign teacher", 
+                "error": result.get('error', 'Transaction failed')
+            }), 500
 
     except Exception as e:
         return jsonify({"message": "Failed to assign teacher", "error": str(e)}), 500
@@ -216,19 +274,48 @@ def assign_teacher_to_course(course_id):
 @admin_bp.route('/users', methods=['GET'])
 @role_required('admin')
 def get_users():
-    # Check for role filter in query parameters
-    role_filter = request.args.get('role')
-    query = {}
-    if role_filter:
-        if role_filter not in ['student', 'teacher', 'admin']:
-            return jsonify({"message": "Invalid role specified for filtering"}), 400
-        query['role'] = role_filter
-    
+    """Get users with pagination and filtering support."""
     try:
-        users_cursor = mongo.db.users.find(query, {'password': 0}) # Exclude passwords
-        users_list = list(users_cursor)
-        serialized_users = DatabaseUtils.serialize_docs(users_list)
-        return jsonify(serialized_users), 200
+        # Get pagination parameters
+        page = int(request.args.get('page', 1))
+        per_page = min(int(request.args.get('per_page', 20)), 100)  # Max 100 per page
+        role_filter = request.args.get('role')
+        sort_field = request.args.get('sort', 'date_joined')
+        sort_direction = -1 if request.args.get('order', 'desc') == 'desc' else 1
+        search = request.args.get('search')
+        
+        # Build query
+        query = {}
+        if role_filter:
+            if role_filter not in ['student', 'teacher', 'admin']:
+                return jsonify({"message": "Invalid role specified for filtering"}), 400
+            query['role'] = role_filter
+        
+        if search:
+            # Search in username, email, first_name, last_name
+            query['$or'] = [
+                {'username': {'$regex': search, '$options': 'i'}},
+                {'email': {'$regex': search, '$options': 'i'}},
+                {'first_name': {'$regex': search, '$options': 'i'}},
+                {'last_name': {'$regex': search, '$options': 'i'}}
+            ]
+        
+        # Use pagination utility with password exclusion
+        result = DatabaseUtils.paginate_query(
+            'users',
+            query=query,
+            page=page,
+            per_page=per_page,
+            sort_field=sort_field,
+            sort_direction=sort_direction
+        )
+        
+        # Remove password fields from results
+        for user in result['data']:
+            user.pop('password_hash', None)
+            user.pop('password', None)
+        
+        return jsonify(result), 200
     except Exception as e:
         return jsonify({"message": "Failed to retrieve users", "error": str(e)}), 500
 
@@ -277,24 +364,57 @@ def update_user(user_id):
 @admin_bp.route('/users/<string:user_id>', methods=['DELETE'])
 @role_required('admin')
 def delete_user(user_id):
+    """Delete a user and all related data using cascade delete."""
     try:
-        # Check if user exists
-        user = mongo.db.users.find_one({"_id": ObjectId(user_id)})
-        if not user:
-            return jsonify({"message": "User not found"}), 404
-        
         # Prevent deleting the current admin user
         current_user = get_jwt_identity()
         if current_user.get('user_id') == user_id:
             return jsonify({"message": "Cannot delete your own account"}), 400
         
-        result = mongo.db.users.delete_one({"_id": ObjectId(user_id)})
-        if result.deleted_count == 0:
-            return jsonify({"message": "User not found or already deleted"}), 404
+        # Use cascade delete with proper transaction handling
+        result = DatabaseUtils.cascade_delete_user(ObjectId(user_id))
         
-        # TODO: Clean up related data (enrollments, course assignments, etc.)
-        # For now, simple delete
-        return jsonify({"message": "User deleted successfully"}), 200
+        if result.get('user_deleted'):
+            user_role = result.get('user', {}).get('role', 'unknown')
+            
+            # Invalidate cache
+            query_cache.invalidate_pattern('users')
+            if user_role == 'student':
+                query_cache.invalidate_pattern('enrollments')
+                query_cache.invalidate_pattern('submissions')
+                query_cache.invalidate_pattern('grades')
+            elif user_role == 'teacher':
+                query_cache.invalidate_pattern('courses')
+            
+            # Build response details
+            details = {
+                "user_role": user_role
+            }
+            
+            if user_role == 'student':
+                details.update({
+                    "enrollments_deleted": result.get('enrollments', 0),
+                    "assignment_submissions_deleted": result.get('assignment_submissions', 0),
+                    "quiz_submissions_deleted": result.get('quiz_submissions', 0),
+                    "grades_deleted": result.get('grades', 0)
+                })
+            elif user_role == 'teacher':
+                details.update({
+                    "courses_unassigned": result.get('courses_unassigned', 0),
+                    "assigned_courses": result.get('assigned_courses', [])
+                })
+            
+            details.update({
+                "notifications_deleted": result.get('notifications', 0),
+                "calendar_events_deleted": result.get('calendar_events', 0)
+            })
+            
+            return jsonify({
+                "message": "User deleted successfully",
+                "details": details
+            }), 200
+        else:
+            return jsonify({"message": "User not found or already deleted"}), 404
     except Exception as e:
         return jsonify({"message": "Failed to delete user", "error": str(e)}), 500
 
@@ -1516,4 +1636,67 @@ def export_report(report_type):
             return jsonify({"message": f"Export format '{format_type}' not supported. Use 'csv' or 'json'."}), 400
             
     except Exception as e:
-        return jsonify({"message": "Failed to export report", "error": str(e)}), 500 
+        return jsonify({"message": "Failed to export report", "error": str(e)}), 500
+
+# === DATABASE PERFORMANCE AND MAINTENANCE ENDPOINTS ===
+
+@admin_bp.route('/database/performance', methods=['GET'])
+@role_required('admin')
+def get_database_performance():
+    """Get database performance metrics and statistics."""
+    try:
+        hours_back = int(request.args.get('hours', 24))
+        
+        # Get performance metrics
+        performance_metrics = DatabaseUtils.get_performance_metrics(hours_back)
+        
+        # Get collection statistics
+        collection_stats = DatabaseUtils.get_collection_stats()
+        
+        # Get database health check
+        health_check = DatabaseUtils.health_check()
+        
+        # Get index optimization recommendations
+        index_recommendations = DatabaseUtils.optimize_indexes()
+        
+        return jsonify({
+            "timestamp": datetime.utcnow(),
+            "performance_metrics": performance_metrics,
+            "collection_stats": collection_stats,
+            "health_check": health_check,
+            "index_recommendations": index_recommendations
+        }), 200
+    except Exception as e:
+        return jsonify({"message": "Failed to retrieve database performance", "error": str(e)}), 500
+
+@admin_bp.route('/database/cleanup', methods=['POST'])
+@role_required('admin')
+def cleanup_database():
+    """Clean up old temporary data and optimize database."""
+    try:
+        data = request.get_json() or {}
+        days_old = int(data.get('days_old', 30))
+        
+        # Perform cleanup
+        cleanup_results = DatabaseUtils.cleanup_old_data(days_old)
+        
+        return jsonify({
+            "message": "Database cleanup completed",
+            "results": cleanup_results
+        }), 200
+    except Exception as e:
+        return jsonify({"message": "Failed to cleanup database", "error": str(e)}), 500
+
+@admin_bp.route('/database/backup-indexes', methods=['POST'])
+@role_required('admin')
+def backup_database_indexes():
+    """Create a backup of current database index configuration."""
+    try:
+        backup_result = DatabaseUtils.create_backup_indexes()
+        
+        return jsonify({
+            "message": "Index backup created successfully",
+            "backup": backup_result
+        }), 200
+    except Exception as e:
+        return jsonify({"message": "Failed to backup indexes", "error": str(e)}), 500 

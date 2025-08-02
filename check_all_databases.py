@@ -133,7 +133,7 @@ def check_all_databases():
             # Show the backend connection string needed
             print(f"\n🔧 Backend Configuration Update:")
             print(f"   Update your MongoDB connection to use database: '{best_db}'")
-            print(f"   Current: 'student_management_system'")
+            print(f"   Current: 'university_ms'")
             print(f"   Recommended: '{best_db}'")
         else:
             print("❌ No databases with significant data found.")
